@@ -20,7 +20,7 @@ public class BridgeMaker {
      */
     public List<String> makeBridge(int size) {
         List<String> locations = new ArrayList<>();
-        while (locations.size() != 3) {
+        while (locations.size() != size) {
             int location = bridgeNumberGenerator.generate();
             if (location == 0) {
                 locations.add("D");
