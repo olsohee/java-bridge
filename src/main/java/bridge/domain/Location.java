@@ -25,4 +25,12 @@ public class Location {
     public List<LocationCommand> getLocationCommands() {
         return locationCommands;
     }
+
+    public void clear() {
+        locationCommands.clear();
+    }
+
+    public boolean isEnd(int locationIndex) {
+        return locationCommands.size() - 1 == locationIndex;
+    }
 }

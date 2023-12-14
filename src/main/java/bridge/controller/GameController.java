@@ -13,6 +13,8 @@ public class GameController {
     private final OutputView outputView;
     private final BridgeGame bridgeGame;
     private RetryGameCommand retryGameCommand = RetryGameCommand.R;
+    private boolean isEnd = false;
+    private int tryCount = 0;
 
     public GameController(InputView inputView, InputConvertor inputConvertor, OutputView outputView, BridgeGame bridgeGame) {
         this.inputView = inputView;
@@ -24,11 +26,13 @@ public class GameController {
     public void run() {
         outputView.printGameStartMessage();
         generateBridge();
-        while (retryGameCommand == RetryGameCommand.R) {
+        while (!isEnd && retryGameCommand == RetryGameCommand.R) {
+            tryCount++;
             bridgeGame.retry();
             move();
         }
 
+        printResult();
     }
 
     private void generateBridge() {
@@ -50,10 +54,24 @@ public class GameController {
                 return;
             }
             outputView.printMap(bridgeGame.getMapDto(true));
+            if (bridgeGame.isEnd()) {
+                isEnd = true;
+                return;
+            }
             move();
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
             move();
         }
+    }
+
+    private void printResult() {
+        outputView.printResultStartMessage();
+        if (retryGameCommand == RetryGameCommand.R) {
+            outputView.printMap(bridgeGame.getMapDto(true));
+        } else {
+            outputView.printMap(bridgeGame.getMapDto(false));
+        }
+        outputView.printResult(isEnd, tryCount);
     }
 }

@@ -3,8 +3,6 @@ package bridge.view;
 import bridge.dto.MapDto;
 import bridge.message.OutputMessage;
 
-import java.util.List;
-
 /**
  * 사용자에게 게임 진행 상황과 결과를 출력하는 역할을 한다.
  */
@@ -41,6 +39,11 @@ public class OutputView {
 
         System.out.println(String.format(OutputMessage.MAP.getMessage(),
                 String.join(OutputMessage.MAP_DELIMITER.getMessage(), mapDto.getDownLocations())));
+        System.out.println();
+    }
+
+    public void printResultStartMessage() {
+        System.out.println(OutputMessage.RESULT_START_MESSAGE.getMessage());
     }
 
     /**
@@ -48,6 +51,12 @@ public class OutputView {
      * <p>
      * 출력을 위해 필요한 메서드의 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public void printResult() {
+    public void printResult(boolean isEnd, int tryCount) {
+        if (isEnd) {
+            System.out.println(String.format(OutputMessage.RESULT.getMessage(), OutputMessage.SUCCESS.getMessage()));
+        } else {
+            System.out.println(String.format(OutputMessage.RESULT.getMessage(), OutputMessage.FAIL.getMessage()));
+        }
+        System.out.println(String.format(OutputMessage.TRY_COUNT.getMessage(), tryCount));
     }
 }
