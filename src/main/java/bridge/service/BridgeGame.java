@@ -2,10 +2,12 @@ package bridge.service;
 
 import bridge.domain.Location;
 import bridge.domain.LocationCommand;
+import bridge.dto.MapDto;
 import bridge.message.ErrorMessage;
 import bridge.utils.BridgeMaker;
 import bridge.utils.BridgeRandomNumberGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,4 +65,28 @@ public class BridgeGame {
     public void retry() {
     }
 
+    public MapDto getMapDto(boolean success) {
+        List<String> upLocations = new ArrayList<>();
+        List<String> downLocations = new ArrayList<>();
+        for (int index = 0; index < user.getLocationCommands().size(); index++) {
+            if (index == user.getLocationCommands().size() - 1 && !success) {
+                if (user.getLocationCommands().get(index) == LocationCommand.U) {
+                    upLocations.add("X");
+                    downLocations.add(" ");
+                    break;
+                }
+                downLocations.add("X");
+                upLocations.add(" ");
+                break;
+            }
+            if (user.getLocationCommands().get(index) == LocationCommand.U) {
+                upLocations.add("O");
+                downLocations.add(" ");
+                continue;
+            }
+            downLocations.add("O");
+            upLocations.add(" ");
+        }
+        return new MapDto(upLocations, downLocations);
+    }
 }

@@ -21,4 +21,8 @@ public class Location {
     public boolean isSame(Location bridge, int locationIndex) {
         return locationCommands.get(locationIndex).equals(bridge.locationCommands.get(locationIndex));
     }
+
+    public List<LocationCommand> getLocationCommands() {
+        return locationCommands;
+    }
 }

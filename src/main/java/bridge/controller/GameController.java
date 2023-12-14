@@ -1,6 +1,6 @@
 package bridge.controller;
 
-import bridge.domain.LocationCommand;
+import bridge.domain.RetryGameCommand;
 import bridge.service.BridgeGame;
 import bridge.utils.InputConvertor;
 import bridge.view.InputView;
@@ -12,6 +12,7 @@ public class GameController {
     private final InputConvertor inputConvertor;
     private final OutputView outputView;
     private final BridgeGame bridgeGame;
+    private RetryGameCommand retryGameCommand = RetryGameCommand.R;
 
     public GameController(InputView inputView, InputConvertor inputConvertor, OutputView outputView, BridgeGame bridgeGame) {
         this.inputView = inputView;
@@ -23,10 +24,10 @@ public class GameController {
     public void run() {
         outputView.printGameStartMessage();
         generateBridge();
-        move();
-//        while () {
-//
-//        }
+        while (retryGameCommand == RetryGameCommand.R) {
+            bridgeGame.retry();
+            move();
+        }
 
     }
 
@@ -44,11 +45,12 @@ public class GameController {
         try {
             bridgeGame.move(inputView.readMoving());
             if (!bridgeGame.isSuccess()) {
-                System.out.println("실패");
-                // 재시도 입력 받기
+                outputView.printMap(bridgeGame.getMapDto(false));
+                retryGameCommand = RetryGameCommand.findCommand(inputView.readRetryGameCommand());
                 return;
             }
-            System.out.println("성공");
+            outputView.printMap(bridgeGame.getMapDto(true));
+            move();
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
             move();
