@@ -20,7 +20,7 @@ public enum LocationCommand {
         return Arrays.stream(LocationCommand.values())
                 .filter(locationCommand -> locationCommand.getCommand().equals(location))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_LOCATION.getErrorMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_INPUT.getErrorMessage()));
     }
 
     public String getCommand() {

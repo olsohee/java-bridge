@@ -1,5 +1,6 @@
 package bridge.controller;
 
+import bridge.domain.LocationCommand;
 import bridge.service.BridgeGame;
 import bridge.utils.InputConvertor;
 import bridge.view.InputView;
@@ -22,6 +23,11 @@ public class GameController {
     public void run() {
         outputView.printGameStartMessage();
         generateBridge();
+        move();
+//        while () {
+//
+//        }
+
     }
 
     private void generateBridge() {
@@ -31,6 +37,21 @@ public class GameController {
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
             generateBridge();
+        }
+    }
+
+    private void move() {
+        try {
+            bridgeGame.move(inputView.readMoving());
+            if (!bridgeGame.isSuccess()) {
+                System.out.println("실패");
+                // 재시도 입력 받기
+                return;
+            }
+            System.out.println("성공");
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+            move();
         }
     }
 }

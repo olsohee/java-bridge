@@ -1,11 +1,13 @@
 package bridge.service;
 
-import bridge.domain.Bridge;
+import bridge.domain.Location;
+import bridge.domain.LocationCommand;
 import bridge.message.ErrorMessage;
 import bridge.utils.BridgeMaker;
 import bridge.utils.BridgeRandomNumberGenerator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 다리 건너기 게임을 관리하는 클래스
@@ -13,14 +15,26 @@ import java.util.List;
 public class BridgeGame {
 
     private final BridgeMaker bridgeMaker = new BridgeMaker(new BridgeRandomNumberGenerator());
-    private Bridge bridge;
+    private Location bridge;
+    private Location user = new Location();
+    private int locationIndex = -1;
 
     public void generateBridge(int size) {
-        validate(size);
-        bridge = new Bridge(bridgeMaker.makeBridge(size));
+        validateBridgeSize(size);
+        List<LocationCommand> locationCommands = bridgeMaker.makeBridge(size).stream()
+                .map(location -> LocationCommand.findCommand(location))
+                .collect(Collectors.toList());
+
+        bridge = new Location(locationCommands);
+
+        // log
+        for (LocationCommand command : locationCommands) {
+            System.out.print(command.getCommand() + " ");
+        }
+        System.out.println();
     }
 
-    private void validate(int size) {
+    private void validateBridgeSize(int size) {
         if (size < 3 || size > 20) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_SIZE.getErrorMessage());
         }
@@ -31,7 +45,14 @@ public class BridgeGame {
      * <p>
      * 이동을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public void move() {
+    public void move(String location) {
+        LocationCommand command = LocationCommand.findCommand(location);
+        user.move(command);
+        locationIndex++;
+    }
+
+    public boolean isSuccess() {
+        return user.isSame(bridge, locationIndex);
     }
 
     /**
